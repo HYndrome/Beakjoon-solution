@@ -1,11 +1,7 @@
-i_n = int(input())
-dict_attendance = {}
-for i_1 in range(i_n):
-    s_name, s_status = input().split()
-    dict_attendance[s_name] = s_status
-lst_attendance = []
-for key_1, value_1 in dict_attendance.items():
-    if value_1 == 'enter':
-        lst_attendance.append(key_1)
-lst_attendance.sort(reverse= True)
-print(*lst_attendance, sep='\n')
+lst_input = open(0).read().split()[1:]
+lst_name = lst_input[::2]
+lst_status = lst_input[1::2]
+dict_name_status = {}
+dict_name_status.update(zip(lst_name, lst_status))
+lst_attendance = [key_1 for key_1, value_1 in dict_name_status.items() if value_1 == 'enter']
+print(*sorted(lst_attendance, reverse= True))
