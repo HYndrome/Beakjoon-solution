@@ -1,14 +1,14 @@
 import sys
 
 i_k = int(sys.stdin.readline())
-lst_stack = []
+lst_int = []
 for i_1 in range(i_k):
-    i_input = int(sys.stdin.readline())
-    if i_input == 0:
+    i_int = int(sys.stdin.readline())
+    if i_int == 0:
         try:
-            lst_stack.pop()
+            lst_int.pop()
         except IndexError:
-            lst_stack.append(0)     
+            lst_int.append(0)
     else:
-        lst_stack.append(i_input)
-print(sum(lst_stack))
+        lst_int.append(i_int)
+print(sum(lst_int))
