@@ -2,7 +2,6 @@ for i_1 in range(int(input())):
     i_m, i_n = map(int, input().split())
     matrix_input = [list(map(int,(input().split()))) for i_2 in range(i_m)]
     matrix_rotate = [[0]*i_m for i_2 in range(i_n)]
-    matrix_zero = [[0]*i_m for i_2 in range(i_n)]
     i_distance = 0
     for i_3 in range(i_m):
         for i_4 in range(i_n):
