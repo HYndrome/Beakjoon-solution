@@ -1,4 +1,4 @@
-hh, mm = map(int,input().split())
-mm_add = int(input())
-mm_total = hh*60 + mm + mm_add
-print(mm_total//60%24, mm_total%60)
+i_h, i_m = map(int, input().split())
+i_cook = int(input())
+i_total = i_h * 60 + i_m + i_cook
+print(i_total//60%24, i_total%60)
