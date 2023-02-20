@@ -1,0 +1,20 @@
+SELECT DISTINCT
+    his.CAR_ID,
+    CASE
+        WHEN aval.CAR_ID IS NOT NULL THEN '대여중'
+        ELSE '대여 가능'
+    END AS 'AVAILABILITY'
+FROM
+    CAR_RENTAL_COMPANY_RENTAL_HISTORY AS his
+LEFT JOIN (
+    SELECT
+        CAR_ID
+    FROM
+        CAR_RENTAL_COMPANY_RENTAL_HISTORY 
+    WHERE
+        START_DATE <= '2022-10-16'
+        AND END_DATE >= '2022-10-16'
+) AS aval
+    ON his.CAR_ID = aval.CAR_ID
+ORDER BY
+    CAR_ID DESC;
