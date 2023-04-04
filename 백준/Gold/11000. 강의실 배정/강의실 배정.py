@@ -37,7 +37,8 @@ for i_2 in range(1, i_n):
     else:
         # 해당 강의실 시간 강의 끝나는 시간으로 교체
         # heapq로는 제일 첫 번째 값(가장 빨리 끝나는 강의실)을 pop하고 끝나는 시간 값을 push 하는 방식으로 구현
-        heapq.heappop(room)
-        heapq.heappush(room, ls_timetable[i_2][1])
+        # heapq.heappop(room)
+        # heapq.heappush(room, ls_timetable[i_2][1])
+        heapq.heappushpop(room, ls_timetable[i_2][1])
 # 강의실 개수 출력 
 print(len(room))
