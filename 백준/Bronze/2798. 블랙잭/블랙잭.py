@@ -1,21 +1,12 @@
-import sys
-i_n, i_m = map(int, sys.stdin.readline().split())
-lst_card = list(map(int, sys.stdin.readline().split()))
+i_n, i_m = map(int, input().split())
+ls_input = list(map(int, input().split()))
 
-i_gap = 300000
-lst_print = []
-for i_1 in range(len(lst_card) - 2):
-    i_sum = lst_card[i_1]
-    lst_card_2 = lst_card[i_1 + 1:]
-    for i_2 in range(len(lst_card_2)):
-        i_sum_2 = i_sum + lst_card_2[i_2]
-        lst_card_3 = lst_card_2[i_2 + 1:]
-        for i_3 in range(len(lst_card_3)):
-            i_sum_3 = i_sum_2 + lst_card_3[i_3]
-            i_gap_2 = i_m - i_sum_3
-            if i_gap_2 == 0:
-                i_gap = i_gap_2
-                break
-            elif (i_gap_2 > 0) * (i_gap_2 < i_gap):
-                i_gap = i_gap_2
-print(i_m - i_gap)
+i_sum = 0
+
+for i_1 in range(len(ls_input) - 2):
+    for i_2 in range(i_1 + 1, len(ls_input) - 1):
+        for i_3 in range(i_2 + 1, len(ls_input)):
+            temp_sum = ls_input[i_1] + ls_input[i_2] + ls_input[i_3]
+            if i_sum < temp_sum <= i_m:
+                i_sum = temp_sum
+print(i_sum)
