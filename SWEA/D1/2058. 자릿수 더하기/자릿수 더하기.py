@@ -1,5 +1,6 @@
-s_input = input()
-i_sum = 0
-for s_1 in s_input:
-    i_sum += int(s_1)
-print(i_sum)
+i_n = int(input())
+sum_digit = 0
+while i_n:
+    sum_digit += i_n % 10
+    i_n //= 10
+print(sum_digit)
