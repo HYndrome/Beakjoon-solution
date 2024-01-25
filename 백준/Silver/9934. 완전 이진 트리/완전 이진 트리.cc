@@ -43,13 +43,6 @@ void PrintLevel(int level)
 int main()
 {
 	Input();
-	if (K == 1)
-	{
-		cout << buildings[0];
-	}
-	else
-	{
-		PrintLevel(0);
-	}
+	PrintLevel(0);
 	return 0;
 }
