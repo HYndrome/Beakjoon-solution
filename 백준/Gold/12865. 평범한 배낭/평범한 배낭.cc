@@ -42,12 +42,7 @@ int main()
 			// 해당 아이템을 사용하지 않은 값 vs 해당 아이템의 무게를 뺀 값 + 해당 아이템의 값
 			backpack[i][w] = Bigger(backpack[i - 1][w], backpack[i - 1][w - items[i].W] + items[i].V);
 		}
-		// 무게를 모두 소진할 경우 중에서 최댓값이 존재
-		if (backpack[i][K] > v_max)
-		{
-			v_max = backpack[i][K];
-		}
 	}
-	cout << v_max;
+	cout << backpack[N][K]; // 배낭의 제일 오른쪽 아래 값이 최댓값;
 	return 0;
 }
