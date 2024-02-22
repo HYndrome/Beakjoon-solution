@@ -11,7 +11,7 @@ int dy[] = { 1, 0, -1, 0 };
 int dx[] = { 0, 1, 0,-1 };
 int T;
 int N, W, H;
-int graph[15][13];
+int graph[15][13]; // 기존 int graph[15][12];
 int dat[4][15][12];
 int boomed[15][12];
 int cnt_min = 0;
@@ -43,14 +43,13 @@ void DfsShoot(int n)
 
 void Gravity()
 {
-    // segmentation error 발생
     for (int y = 0; y < H; y++)
     {
         for (int x = 0; x < W; x++)
         {
             if (boomed[y][x] == 1)
             {
-                graph[y][x] = 0;
+                graph[y][x] = 0; // segmentation error 발생
             }
         }
     }
@@ -103,10 +102,10 @@ void Boom(int x_tar)
             break;
         }
         y_tar++;
-    }
-    if (y_tar >= H) // 벽돌이 비어있는 경우
-    {
-        return;
+        if (y_tar >= H) // 벽돌이 비어있는 경우
+        {
+            return;
+        }
     }
     queue<Node> q;
     q.push({ y_tar, x_tar });
