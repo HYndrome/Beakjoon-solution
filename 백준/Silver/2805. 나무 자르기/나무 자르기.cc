@@ -4,7 +4,21 @@ using namespace std;
 
 int N, M;
 vector<int> trees;
-int height_cut;
+
+void Input();
+
+long long CutTree(int height);
+
+int BiSearch();
+
+int main()
+{
+	int ans;
+	Input();
+	ans = BiSearch();
+	cout << ans << "\n";
+	return 0;
+}
 
 void Input()
 {
@@ -17,36 +31,33 @@ void Input()
 	}
 }
 
-void UpdateHeightCut(int start, int end)
+long long CutTree(int height)
 {
-	long long sum_tree = 0;
-	int mid = (start + end) / 2;
-	height_cut = mid;
-	if (start > mid)
+	long long cnt = 0;
+	for (int i = 0; i < N; i++)
 	{
-		return;
-	}
-	for (int i = 0; i < trees.size(); i++)
-	{
-		if (trees[i] - mid > 0)
+		int tree_taken = trees[i] - height;
+		if (tree_taken > 0)
 		{
-			sum_tree += trees[i] - mid;
+			cnt += tree_taken;
 		}
 	}
-	if (sum_tree >= M)
-	{
-		UpdateHeightCut(mid + 1, end);
-	}
-	if (sum_tree < M)
-	{
-		UpdateHeightCut(start, mid - 1);
-	}
+
+	return cnt;
 }
 
-int main()
+int BiSearch()
 {
-	Input();
-	UpdateHeightCut(1,2000000000);
-	cout << height_cut;
-	return 0;
+	int start = 0;
+	int end = 2000000000;
+	while (start <= end)
+	{
+		int mid = (start + end) / 2;
+		long long cnt_current = CutTree(mid);
+		if (cnt_current < M)
+			end = mid - 1;
+		else if (cnt_current >= M)
+			start = mid + 1;
+	}
+	return end;
 }
