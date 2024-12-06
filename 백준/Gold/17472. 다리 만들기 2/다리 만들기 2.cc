@@ -1,213 +1,215 @@
 #include <iostream>
 #include <queue>
-#include <vector>
 #include <algorithm>
 using namespace std;
 
-struct Node 
+struct Node
 {
 	int y, x;
 };
 
-struct Edge
+struct Bridge
 {
-	int n1, n2, cost;
+	int start, end, cost;
 };
 
-int dy[] = { 1, 0, -1 , 0 };
-int dx[] = { 0, 1, 0, -1 };
-int N, M;
+int n, m;
 int graph[10][10];
-int map_island[10][10];
+int island[10][10];
 int island_no = 0;
-vector<Edge> edges;
-int arr_islands[7];
+int dy[] = { 1, 0, -1, 0 };
+int dx[] = { 0, 1, 0, -1 };
+vector<Bridge> bridges;
+int team[7];
+int sum_cost = 0;
+int sum_island = 0;
+
+
+void Init()
+{
+	for (int i = 0; i < 7; i++)
+	{
+		team[i] = i;
+	}
+}
 
 void Input()
 {
-	cin >> N >> M;
-	for (int y = 0; y < N; y++)
+	cin >> n >> m;
+	for (int y = 0; y < n; y++)
 	{
-		for (int x = 0; x < M; x++)
+		for (int x = 0; x < m; x++)
 		{
 			cin >> graph[y][x];
 		}
 	}
 }
 
-void PaintIsland(int y, int x)
+void FindIsland(int y_in, int x_in)
 {
-	if (graph[y][x] == 0) // 섬이 아닌곳
-	{
-		return;
-	}
-	if (map_island[y][x] != 0) // 이미 탐색한 섬
+	if (graph[y_in][x_in] == 0 || island[y_in][x_in] != 0)
 	{
 		return;
 	}
 	island_no += 1;
-	map_island[y][x] = island_no;
-	queue<Node> q;
-	q.push({ y, x });
-	while (!q.empty())
+	island[y_in][x_in] = island_no;
+	queue<Node> que;
+	que.push({ y_in, x_in });
+	while (!que.empty())
 	{
-		Node current = q.front();
-		q.pop();
+		Node current = que.front();
+		que.pop();
 		for (int i = 0; i < 4; i++)
 		{
 			int ny = current.y + dy[i];
 			int nx = current.x + dx[i];
-			if (ny >= N || nx >= M || ny < 0 || nx < 0)
+			if (ny < 0 || ny >= n || nx < 0 || nx >= m)
 			{
 				continue;
 			}
-			if (graph[ny][nx] != 1) // 탐색종료조건: 섬이 아닌 곳
+			if (graph[ny][nx] != 1)
 			{
 				continue;
 			}
-			if (map_island[ny][nx] != 0) // 탐색종료조건: 이미 섬으로 탐색된 곳
+			if (island[ny][nx] != 0)
 			{
 				continue;
 			}
-			map_island[ny][nx] = island_no;
-			q.push({ ny, nx });
+			island[ny][nx] = island_no;
+			que.push({ ny, nx });
 		}
 	}
-
 }
 
-void PaintIslands()
+void FindIslands()
 {
-	for (int y = 0; y < N; y++)
+	for (int y = 0; y < n; y++)
 	{
-		for (int x = 0; x < M; x++)
+		for (int x = 0; x < m; x++)
 		{
-			PaintIsland(y, x);
+			FindIsland(y, x);
 		}
 	}
 }
 
-void CalCostIsland(int y, int x)
+void Print()
 {
-	if (map_island[y][x] == 0) // 섬 위가 아닌 경우 종료
+	for (int i = 0; i < bridges.size(); i++)
+	{
+		cout << bridges[i].start << " " << bridges[i].end << " " << bridges[i].cost << "\n";
+	}
+}
+
+void FindRoute(int y_in, int x_in)
+{
+	if (island[y_in][x_in] == 0)
 	{
 		return;
 	}
-	// 해당 지점에서 상하좌우 탐색, 빈곳이 있을 경우 해당 방향으로 쭉 확장해서
-	// 제일 처음 만나는 섬과 거리 확인
-	for (int i = 0; i < 4; i++)
+	int start = island[y_in][x_in];
+	int cost;
+	for (int i = 0; i < 4; i++) // 4방향 탐색
 	{
-		int ny = y + dy[i];
-		int nx = x + dx[i];
-		if (ny >= N || nx >= M || ny < 0 || nx < 0)
-		{
-			continue;
-		}
-		if (map_island[ny][nx] != 0)
-		{
-			continue;
-		}
-		int cost = 0;
+		cost = 1;
 		while (1)
 		{
-			ny = ny + dy[i];
-			nx = nx + dx[i];
-			cost++;
-			if (ny >= N || nx >= M || ny < 0 || nx < 0)
+			int ny = y_in + cost * dy[i];
+			int nx = x_in + cost * dx[i];
+			if (ny < 0 || ny >= n || nx < 0 || nx >= m)
 			{
 				break;
 			}
-			if (map_island[ny][nx] != 0)
+			if (island[ny][nx] == start)
 			{
-				edges.push_back({ map_island[y][x], map_island[ny][nx], cost });
+				break;
+			}
+			if (island[ny][nx] == 0)
+			{
+				cost += 1;
+			}
+			if (island[ny][nx] > 0)
+			{
+				cost -= 1;
+				if (cost < 2)
+				{
+					break;
+				}
+				bridges.push_back({ start, island[ny][nx], cost });
 				break;
 			}
 		}
 	}
 }
 
-void CalCostIslands()
+void FindRoutes()
 {
-	for (int y = 0; y < N; y++)
+	for (int y = 0; y < n; y++)
 	{
-		for (int x = 0; x < M; x++)
+		for (int x = 0; x < m; x++)
 		{
-			CalCostIsland(y, x);
+			FindRoute(y, x);
 		}
 	}
 }
 
-bool CmpCost(Edge left, Edge right)
+bool SortBridge(Bridge left, Bridge right)
 {
 	return left.cost < right.cost;
 }
 
-void InitArr()
+int Find(int member)
 {
-	for (int i = 0; i < 7; i++)
+	if (member == team[member])
 	{
-		arr_islands[i] = i;
+		return member;
 	}
+	int boss = Find(team[member]);
+	team[member] = boss;
+	return boss;
 }
 
-int FindUnion(int tar)
+void SetUnion(int member_1, int member_2)
 {
-	if (tar == arr_islands[tar])
-	{
-		return tar;
-	}
-	int ret = FindUnion(arr_islands[tar]);
-	arr_islands[tar] = ret;
-	return ret;
-}
-
-void SetUnion(int a, int b)
-{
-	int t1 = FindUnion(a);
-	int t2 = FindUnion(b);
-	if (t1 == t2)
+	int boss_1 = Find(member_1);
+	int boss_2 = Find(member_2);
+	if (boss_1 == boss_2)
 	{
 		return;
 	}
-	arr_islands[t2] = t1;
+	team[boss_2] = boss_1;
 }
 
-int Kruskal()
-{
-	int cnt = 0;
-	int cost_sum = 0;
-	InitArr();
-	sort(edges.begin(), edges.end(), CmpCost); // edge들 cost별로 정렬
-	for (Edge edge : edges)
-	{
-		if (FindUnion(edge.n1) == FindUnion(edge.n2))
-		{
-			continue;
-		}
-		if (edge.cost < 2) //다리의 길이는 2 이상
-		{
-			continue;
-		}
-		SetUnion(edge.n1, edge.n2);
-		cnt++;
-		cost_sum += edge.cost;
-		if (cnt == island_no - 1)
-		{
-			return cost_sum;
-		}
-	}
-	return -1;
-}
 
 int main()
 {
+	Init();
 	Input();
-	// 섬에 번호를 붙이기
-	PaintIslands();
-	// 섬 간 거리 구하기
-	CalCostIslands();
-	// 크루스칼로 스패닝 트리 + 다리 길이는 1이될 수 없음
-	int ans = Kruskal();
-	cout << ans;
+	FindIslands();
+	FindRoutes();
+	sort(bridges.begin(), bridges.end(), SortBridge);
+	// Print();
+	for (Bridge bridge : bridges)
+	{
+		if (Find(bridge.start) == Find(bridge.end))
+		{
+			continue;
+		}
+		sum_cost += bridge.cost;
+		SetUnion(bridge.start, bridge.end);
+		sum_island += 1;
+		// cout << bridge.start << " " << bridge.end << " " << bridge.cost << "\n";
+		if (sum_island == island_no - 1)
+		{
+			break;
+		}
+	}
+	if (sum_island == island_no - 1)
+	{
+		cout << sum_cost << "\n";
+	}
+	else
+	{
+		cout << -1 << "\n";
+	}
 	return 0;
 }
